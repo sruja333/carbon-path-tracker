@@ -5,6 +5,8 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Car, Home, UtensilsCrossed, Trash2, ShoppingBag, Leaf } from "lucide-react";
 import heroImage from "@/assets/hero-earth.jpg";
+import vineLeft from "@/assets/vine-left.png";
+import vineRight from "@/assets/vine-right.png";
 
 const Index = () => {
   const [isCalculating, setIsCalculating] = useState(false);
@@ -81,7 +83,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted">
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
+      {/* Decorative Vines */}
+      <img 
+        src={vineLeft} 
+        alt="" 
+        className="fixed left-0 top-0 h-full w-auto opacity-20 pointer-events-none z-0"
+        style={{ maxWidth: '150px' }}
+      />
+      <img 
+        src={vineRight} 
+        alt="" 
+        className="fixed right-0 top-0 h-full w-auto opacity-20 pointer-events-none z-0"
+        style={{ maxWidth: '150px' }}
+      />
+      
       {/* Hero Section */}
       <section className="relative h-[60vh] overflow-hidden">
         <div 
@@ -95,14 +111,14 @@ const Index = () => {
           <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground mb-4">
             Carbon Footprint Tracker
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-2xl">
+          <p className="text-xl md:text-2xl font-bold text-black max-w-2xl">
             Measure your environmental impact and discover ways to live more sustainably
           </p>
         </div>
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
+      <div className="container mx-auto px-4 py-16 max-w-4xl relative z-10">
         <div className="space-y-8">
           {/* Travel Section */}
           <Card className="p-8 shadow-lg animate-slide-up" style={{ animationDelay: '0.1s' }}>
