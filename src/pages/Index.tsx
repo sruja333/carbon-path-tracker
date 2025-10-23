@@ -411,14 +411,14 @@ const Index = () => {
       </div>
 
       {/* Motivational Footer */}
-      <footer className="relative z-10 mt-16 py-16 bg-gradient-to-br from-primary to-secondary">
+      <footer className="relative z-10 mt-16 py-16 bg-gradient-to-b from-background to-primary/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <Leaf className="w-12 h-12 text-accent mx-auto mb-4 animate-pulse" />
-            <h3 className="text-3xl font-bold text-primary-foreground mb-4">
+            <h3 className="text-3xl font-bold text-foreground mb-4">
               Together, we can make a difference for our planet 🌱
             </h3>
-            <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Small changes in your daily habits can create a massive impact on our environment
             </p>
           </div>
@@ -450,7 +450,7 @@ const Index = () => {
           </div>
           
           <div className="text-center mt-12">
-            <p className="text-primary-foreground/80 text-sm">
+            <p className="text-muted-foreground text-sm">
               Every action counts. Start your sustainable journey today! 🌍
             </p>
           </div>
