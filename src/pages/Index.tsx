@@ -410,12 +410,50 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-primary/5 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">
-            Together, we can make a difference for our planet 🌱
-          </p>
+      {/* Motivational Footer */}
+      <footer className="relative z-10 mt-16 py-16 bg-gradient-to-br from-primary to-secondary">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Leaf className="w-12 h-12 text-accent mx-auto mb-4 animate-pulse" />
+            <h3 className="text-3xl font-bold text-primary-foreground mb-4">
+              Together, we can make a difference for our planet 🌱
+            </h3>
+            <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto">
+              Small changes in your daily habits can create a massive impact on our environment
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Card className="p-6 bg-card/95 backdrop-blur animate-fade-in hover:scale-105 transition-transform">
+              <div className="text-4xl mb-3">🚴</div>
+              <h4 className="font-bold text-lg mb-2 text-foreground">Choose Green Transport</h4>
+              <p className="text-sm text-muted-foreground">
+                Walking, cycling, or using public transport can reduce your carbon footprint by up to 2 tons per year
+              </p>
+            </Card>
+            
+            <Card className="p-6 bg-card/95 backdrop-blur animate-fade-in hover:scale-105 transition-transform" style={{ animationDelay: '0.1s' }}>
+              <div className="text-4xl mb-3">🌿</div>
+              <h4 className="font-bold text-lg mb-2 text-foreground">Eat More Plants</h4>
+              <p className="text-sm text-muted-foreground">
+                Reducing meat consumption by half can save 500kg of CO₂ emissions annually
+              </p>
+            </Card>
+            
+            <Card className="p-6 bg-card/95 backdrop-blur animate-fade-in hover:scale-105 transition-transform" style={{ animationDelay: '0.2s' }}>
+              <div className="text-4xl mb-3">♻️</div>
+              <h4 className="font-bold text-lg mb-2 text-foreground">Reduce & Recycle</h4>
+              <p className="text-sm text-muted-foreground">
+                Recycling and composting can divert 75% of waste from landfills and reduce emissions
+              </p>
+            </Card>
+          </div>
+          
+          <div className="text-center mt-12">
+            <p className="text-primary-foreground/80 text-sm">
+              Every action counts. Start your sustainable journey today! 🌍
+            </p>
+          </div>
         </div>
       </footer>
     </div>
