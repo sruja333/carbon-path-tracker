@@ -7,11 +7,19 @@ import { Car, Home, UtensilsCrossed, Trash2, ShoppingBag, Leaf } from "lucide-re
 import heroImage from "@/assets/hero-earth.jpg";
 import vineLeft from "@/assets/vine-left.png";
 import vineRight from "@/assets/vine-right.png";
+import { CarbonDashboard } from "@/components/dashboard/CarbonDashboard";
 
 const Index = () => {
   const [isCalculating, setIsCalculating] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [carbonFootprint, setCarbonFootprint] = useState(0);
+  const [breakdown, setBreakdown] = useState({
+    transportation: 0,
+    electricity: 0,
+    diet: 0,
+    waste: 0,
+    water: 0,
+  });
 
   // Travel state
   const [travelKmPerDay, setTravelKmPerDay] = useState(25);
@@ -68,7 +76,24 @@ const Index = () => {
     if (!res.ok) throw new Error("Failed to fetch");
 
     const data = await res.json();
-    setCarbonFootprint(Math.round(data.footprint)); // 'footprint' comes from backend
+    const totalFootprint = Math.round(data.footprint);
+    setCarbonFootprint(totalFootprint);
+    
+    // Calculate breakdown (approximate based on typical emission factors)
+    const transportEmission = travelKmPerDay * 30 * 0.171 * (carpool === "yes" ? 0.5 : 1);
+    const electricityEmission = electricityUnits * 0.42 + (acUsage === "daily" ? 150 * 0.42 : acUsage === "occasionally" ? 50 * 0.42 : 0);
+    const dietEmission = (meatMealsPerWeek * 4 * 2.4) + (dairyLitersPerDay * 30 * 1.9);
+    const wasteEmission = wasteKgPerWeek * 4 * 0.7 * (recycle === "yes" ? 0.3 : 1);
+    const waterEmission = waterUsageLiters * 30 * 0.0003;
+    
+    setBreakdown({
+      transportation: transportEmission,
+      electricity: electricityEmission,
+      diet: dietEmission,
+      waste: wasteEmission,
+      water: waterEmission,
+    });
+    
     setShowResults(true);
   } catch (error) {
     console.error("Error calculating footprint:", error);
@@ -379,29 +404,9 @@ const Index = () => {
             </Button>
           </div>
 
-          {/* Results Section */}
+          {/* Dashboard Section */}
           {showResults && (
-            <Card className="p-10 shadow-xl bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/20 animate-scale-in">
-              <div className="text-center">
-                <Leaf className="w-16 h-16 text-accent mx-auto mb-4" />
-                <h3 className="text-2xl font-bold mb-2 text-foreground">Your Carbon Footprint</h3>
-                <div className="text-6xl font-bold text-primary my-6">
-                  {carbonFootprint} kg CO₂
-                </div>
-                <p className="text-lg text-muted-foreground mb-4">per month</p>
-                <div className="bg-muted/50 rounded-lg p-4 mt-6">
-                  <p className="text-sm text-foreground">
-                    {carbonFootprint < 300 ? (
-                      "🌟 Great job! You're below average. Keep up the sustainable lifestyle!"
-                    ) : carbonFootprint < 500 ? (
-                      "👍 You're doing okay! There's room for improvement to reduce your footprint."
-                    ) : (
-                      "🌍 Your footprint is above average. Consider making some eco-friendly changes!"
-                    )}
-                  </p>
-                </div>
-              </div>
-            </Card>
+            <CarbonDashboard footprint={carbonFootprint} breakdown={breakdown} />
           )}
         </div>
       </div>
