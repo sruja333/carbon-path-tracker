@@ -12,9 +12,15 @@ interface CarbonDashboardProps {
     waste: number;
     water: number;
   };
+  userChoices: {
+    renewableEnergy: string;
+    recycle: string;
+    transportMode: string;
+    carpool: string;
+  };
 }
 
-export const CarbonDashboard = ({ footprint, breakdown }: CarbonDashboardProps) => {
+export const CarbonDashboard = ({ footprint, breakdown, userChoices }: CarbonDashboardProps) => {
   // Find the category with highest emissions
   const topCategory = Object.entries(breakdown).reduce((a, b) => 
     b[1] > a[1] ? b : a
@@ -29,7 +35,7 @@ export const CarbonDashboard = ({ footprint, breakdown }: CarbonDashboardProps) 
       <EmissionBreakdown breakdown={breakdown} />
       
       {/* Recommendations */}
-      <Recommendations footprint={footprint} topCategory={topCategory} />
+      <Recommendations footprint={footprint} topCategory={topCategory} userChoices={userChoices} />
 
       {/* Comparisons */}
       <Comparisons footprint={footprint} />

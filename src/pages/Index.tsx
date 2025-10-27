@@ -406,7 +406,16 @@ const Index = () => {
 
           {/* Dashboard Section */}
           {showResults && (
-            <CarbonDashboard footprint={carbonFootprint} breakdown={breakdown} />
+            <CarbonDashboard 
+              footprint={carbonFootprint} 
+              breakdown={breakdown}
+              userChoices={{
+                renewableEnergy,
+                recycle,
+                transportMode,
+                carpool,
+              }}
+            />
           )}
         </div>
       </div>

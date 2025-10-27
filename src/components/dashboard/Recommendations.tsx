@@ -5,12 +5,18 @@ import { Leaf, Zap, Bus, Recycle } from "lucide-react";
 interface RecommendationsProps {
   footprint: number;
   topCategory: string;
+  userChoices: {
+    renewableEnergy: string;
+    recycle: string;
+    transportMode: string;
+    carpool: string;
+  };
 }
 
-export const Recommendations = ({ footprint, topCategory }: RecommendationsProps) => {
+export const Recommendations = ({ footprint, topCategory, userChoices }: RecommendationsProps) => {
   const treesToOffset = Math.ceil(footprint / 25); // Average tree absorbs ~25kg CO₂/month
   
-  const recommendations = [
+  const allRecommendations = [
     {
       icon: Leaf,
       title: "Plant Trees",
@@ -18,6 +24,7 @@ export const Recommendations = ({ footprint, topCategory }: RecommendationsProps
       impact: "High Impact",
       color: "text-green-600",
       bgColor: "bg-green-50",
+      shouldShow: true, // Always show
     },
     {
       icon: Zap,
@@ -26,6 +33,7 @@ export const Recommendations = ({ footprint, topCategory }: RecommendationsProps
       impact: "High Impact",
       color: "text-yellow-600",
       bgColor: "bg-yellow-50",
+      shouldShow: userChoices.renewableEnergy === "no",
     },
     {
       icon: Bus,
@@ -34,6 +42,7 @@ export const Recommendations = ({ footprint, topCategory }: RecommendationsProps
       impact: "Medium Impact",
       color: "text-blue-600",
       bgColor: "bg-blue-50",
+      shouldShow: userChoices.transportMode === "car" || userChoices.transportMode === "bike",
     },
     {
       icon: Recycle,
@@ -42,14 +51,22 @@ export const Recommendations = ({ footprint, topCategory }: RecommendationsProps
       impact: "Medium Impact",
       color: "text-purple-600",
       bgColor: "bg-purple-50",
+      shouldShow: userChoices.recycle === "no",
     },
   ];
 
+  // Filter recommendations based on user's current choices
+  const recommendations = allRecommendations.filter(rec => rec.shouldShow);
+
   // Prioritize recommendation based on top category
   let priorityRecommendation = recommendations[0];
-  if (topCategory === "transportation") priorityRecommendation = recommendations[2];
-  else if (topCategory === "electricity") priorityRecommendation = recommendations[1];
-  else if (topCategory === "waste") priorityRecommendation = recommendations[3];
+  if (topCategory === "transportation" && recommendations.find(r => r.title === "Use Public Transport")) {
+    priorityRecommendation = recommendations.find(r => r.title === "Use Public Transport")!;
+  } else if (topCategory === "electricity" && recommendations.find(r => r.title === "Switch to Renewable Energy")) {
+    priorityRecommendation = recommendations.find(r => r.title === "Switch to Renewable Energy")!;
+  } else if (topCategory === "waste" && recommendations.find(r => r.title === "Recycle More")) {
+    priorityRecommendation = recommendations.find(r => r.title === "Recycle More")!;
+  }
 
   return (
     <Card className="shadow-lg">
