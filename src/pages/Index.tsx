@@ -37,81 +37,46 @@ const Index = () => {
   const [shoppingFreq, setShoppingFreq] = useState(3);
   const [onlineOrders, setOnlineOrders] = useState(5);
 
-  const calculateFootprint = () => {
-    setIsCalculating(true);
-    
-    // Calculations based on global standards (IPCC, EPA, DEFRA, FAO)
-    let total = 0;
-    
-    // TRANSPORTATION - Based on DEFRA 2024 UK Government GHG Conversion Factors
-    // Source: https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024
-    const transportFactors: { [key: string]: number } = {
-      car: 0.171,        // Average petrol car (kg CO2e per km)
-      bike: 0.103,       // Motorbike/scooter (kg CO2e per km)
-      bus: 0.103,        // Average local bus (kg CO2e per km per passenger)
-      metro: 0.031,      // National rail/metro (kg CO2e per km per passenger)
-      bicycle: 0,        // Zero emissions
-      walk: 0            // Zero emissions
-    };
-    // Carpooling reduces emissions by ~50% (sharing with 1 other person)
-    const carpoolMultiplier = carpool === "yes" ? 0.5 : 1;
-    total += travelKmPerDay * 30 * transportFactors[transportMode] * carpoolMultiplier;
+ const calculateFootprint = async () => {
+  setIsCalculating(true);
+  setShowResults(false);
 
-    // ELECTRICITY - Based on EPA eGRID 2024 (US National Average) & IEA 2024
-    // Source: https://www.epa.gov/egrid & https://www.iea.org
-    // Global average: 0.475 kg CO2/kWh, US average: 0.373 kg CO2/kWh
-    // Using 0.42 kg CO2/kWh as balanced global estimate
-    const electricityFactor = 0.42; // kg CO2 per kWh (global average)
-    total += electricityUnits * electricityFactor;
-    
-    // Air conditioning adds significant energy consumption
-    // Average AC: 1.5-3 kW × hours of use
-    if (acUsage === "daily") total += 150 * electricityFactor;      // ~150 kWh/month extra
-    if (acUsage === "occasionally") total += 50 * electricityFactor; // ~50 kWh/month extra
-    
-    // Renewable energy reduces grid carbon intensity by ~70%
-    if (renewableEnergy === "yes") total *= 0.3; // Only 30% of grid emissions
-
-    // FOOD & DIET - Based on Our World in Data / FAO Global LCA Studies
-    // Source: https://ourworldindata.org/environmental-impacts-of-food
-    // Emission factors per kg of food product (kg CO2e per kg):
-    // Beef: 27, Lamb: 24, Pork: 7.6, Chicken: 6.9, Fish: 6.1
-    // Using weighted average for "non-veg meal" = 12 kg CO2e per kg (mixed meat meal)
-    // Average meal portion: 0.2 kg meat per meal
-    const meatEmissionPerMeal = 12 * 0.2; // 2.4 kg CO2e per meal
-    total += meatMealsPerWeek * 4 * meatEmissionPerMeal;
-    
-    // Dairy milk: 1.9 kg CO2e per liter (FAO data)
-    const dairyEmissionPerLiter = 1.9;
-    total += dairyLitersPerDay * 30 * dairyEmissionPerLiter;
-    
-    // Local/seasonal food reduces transport emissions by ~10-15%
-    if (localFood === "yes") total *= 0.88; // 12% reduction
-
-    // WASTE & WATER - Based on IPCC Waste Guidelines 2006
-    // Source: https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol5.html
-    // Landfill waste: ~0.5-1.0 kg CO2e per kg (methane emissions)
-    const wasteEmissionFactor = 0.7; // kg CO2e per kg waste (average)
-    total += wasteKgPerWeek * 4 * wasteEmissionFactor;
-    
-    // Recycling prevents ~70% of waste emissions
-    if (recycle === "yes") total *= 0.3; // Only 30% goes to landfill
-    
-    // Water treatment & heating: ~0.0003 kg CO2 per liter (negligible but included)
-    total += waterUsageLiters * 0.0003 * 30; // Monthly water usage
-
-    // LIFESTYLE & CONSUMPTION - Based on textile industry & logistics data
-    // New clothing: ~20 kg CO2e per item (production + transport average)
-    // Online delivery: ~0.5-2 kg CO2e per package (last-mile logistics)
-    total += shoppingFreq * 20;     // Clothing production footprint
-    total += onlineOrders * 1.5;    // Delivery logistics footprint
-
-    setTimeout(() => {
-      setCarbonFootprint(Math.round(total));
-      setIsCalculating(false);
-      setShowResults(true);
-    }, 1500);
+  const payload = {
+    travelKmPerDay,
+    transportMode,
+    carpool,
+    electricityUnits,
+    acUsage,
+    renewableEnergy,
+    meatMealsPerWeek,
+    dairyLitersPerDay,
+    localFood,
+    wasteKgPerWeek,
+    recycle,
+    waterUsageLiters,
+    shoppingFreq,
+    onlineOrders
   };
+
+  try {
+    const res = await fetch("http://127.0.0.1:8000/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const data = await res.json();
+    setCarbonFootprint(Math.round(data.footprint)); // 'footprint' comes from backend
+    setShowResults(true);
+  } catch (error) {
+    console.error("Error calculating footprint:", error);
+  } finally {
+    setIsCalculating(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
