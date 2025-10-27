@@ -25,13 +25,13 @@ export const CarbonDashboard = ({ footprint, breakdown }: CarbonDashboardProps) 
       {/* Main Summary Card */}
       <CarbonSummaryCard footprint={footprint} />
 
-      {/* Two Column Layout */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        <EmissionBreakdown breakdown={breakdown} />
-        <Recommendations footprint={footprint} topCategory={topCategory} />
-      </div>
+      {/* Emission Breakdown */}
+      <EmissionBreakdown breakdown={breakdown} />
+      
+      {/* Recommendations */}
+      <Recommendations footprint={footprint} topCategory={topCategory} />
 
-      {/* Comparisons Full Width */}
+      {/* Comparisons */}
       <Comparisons footprint={footprint} />
     </div>
   );
